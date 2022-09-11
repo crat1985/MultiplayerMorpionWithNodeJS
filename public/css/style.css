@@ -1,0 +1,81 @@
+*{
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    box-sizing: border-box;
+}
+body{
+    background-color: blue;
+}
+form{
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr;
+    margin: 0 auto;
+    background-color: white;
+    border-radius: 20px;
+    padding: 10px;
+    width: fit-content;
+}
+form *{
+    width: fit-content;
+    margin: 3px auto;
+}
+input[type="submit"]{
+    background-color: blue;
+    color: white;
+    border: 1px solid rgb(0, 0, 222);
+    font-weight: bold;
+}
+.hidden{
+    visibility: hidden;
+}
+.d-none{
+    display: none;
+}
+.btn{
+    background-color: white;
+    width: 98px;
+    height: 98px;
+    margin: 1px;
+}
+.btn:hover{
+    background-color: darkgray;
+    cursor: pointer;
+}
+.btn:active{
+    background-color: gray;
+}
+.morpion{
+    display: grid;
+    width: 300px;
+    height: 300px;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin: 0 auto;
+}
+.me{
+    background-color: blue !important;
+}
+.me:hover{
+    background-color: darkblue !important;
+}
+.you{
+    background-color: red !important;
+}
+.you:hover{
+    background-color: darkred !important;
+}
+a{
+    color: black;
+    text-align: center;
+}
+p{
+    text-align: center;
+}
+.turn{
+    width: 300px;
+    text-align: center;
+    margin: 10px auto;
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+}

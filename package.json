@@ -1,0 +1,28 @@
+{
+  "name": "morpionmultijoueurnodejs",
+  "version": "1.0.0",
+  "description": "Just a multiplayers morpion game.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RIC217/MultiplayerMorpionWithNodeJS.git"
+  },
+  "author": "RIC217",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RIC217/MultiplayerMorpionWithNodeJS/issues"
+  },
+  "homepage": "https://github.com/RIC217/MultiplayerMorpionWithNodeJS#readme",
+  "devDependencies": {
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.19"
+  },
+  "dependencies": {
+    "express": "^4.18.1",
+    "socket.io": "^4.5.2"
+  }
+}

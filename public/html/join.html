@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiplayer Morpion Game</title>
+    <script src="/js/join.js" defer></script>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/socket.io/socket.io.js" defer></script>
+</head>
+<body>
+    <form>
+        <input type="text" name="pseudo" class="pseudo" placeholder="Pseudo">
+        <input type="submit" value="Créer une partie" class="createGame">
+    </form>
+    <p class="waiting d-none" style="text-align: center;">Attente d'un autre joueur...</p>
+    <p class="turn d-none"></p>
+    <div class="morpion d-none">
+        <div class="btn1 btn d-none"></div>
+        <div class="btn2 btn d-none"></div>
+        <div class="btn3 btn d-none"></div>
+        <div class="btn4 btn d-none"></div>
+        <div class="btn5 btn d-none"></div>
+        <div class="btn6 btn d-none"></div>
+        <div class="btn7 btn d-none"></div>
+        <div class="btn8 btn d-none"></div>
+        <div class="btn9 btn d-none"></div>
+    </div>
+</body>
+</html>
