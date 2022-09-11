@@ -162,6 +162,7 @@ const won = ()=>{
 }
 
 const click = ()=>{
+    clickSound.currentTime = 0;
     clickSound.play();
 }
 const gameOver = ()=>{

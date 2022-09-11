@@ -9,40 +9,14 @@ const https = require("https").createServer({
 const {Server} = require("socket.io");
 const port = 443;
 
-app.use("/js",express.static(path.join(__dirname,"public/js"))).use("/css",express.static(path.join(__dirname,"public/css")));
-
-app.use("/favicon.ico",express.static(path.join(__dirname,"src/images/favicon.ico")));
-
-app.use("/mp3",express.static(path.join(__dirname,"src/mp3")));
-
-app.use("/",(req,res,next)=>{
-    console.log("New connection :",req.ip);
-    next();
-})
-
-app.get("/",(req,res)=>{
-    res.sendFile(path.join(__dirname,"public/html/index.html"))
-})
-app.get("/join",(req,res)=>{
-    res.sendFile(path.join(__dirname,"public/html/join.html"))
-})
-
-app.get("/404",(req,res)=>{
-    res.sendFile(path.join(__dirname,"public/html/404.html"))
-})
+require("./modules/router")(app,express,__dirname);
+require("./modules/routes")(app,__dirname);
 
 const io = new Server(https);
 
 https.listen(port, ()=>{
     console.log("HTTPS server listening at https://nodejshttps.ddns.net/");
 })
-
-// https.on("stream",(stream,headers)=>{
-//     stream.respond({
-//         "content-type": "application/json",
-//         "status": 200
-//     })
-// })
 
 let games = [];
 let sockets = [];
@@ -62,22 +36,7 @@ io.on("connection", (socket)=>{
                 return;
             };
         }
-        let stop = false;
-        if(games.length>0){
-            games.forEach((game)=>{
-                stop = true;
-                if(game.owner.pseudo===socket.pseudo){
-                    socket.emit("alreadycreatedparty");
-                    return;
-                }else if(game.connected===socket){
-                    socket.emit("alreadyinaparty");
-                    return;
-                }else{
-                    stop=false;
-                }
-            })
-        }
-        if(stop) return;
+        if(require("./modules/checkIfIsAlreadyInParty")(socket,games)) return;
         let game;
         let turn;
         if(createGame){
@@ -88,14 +47,7 @@ io.on("connection", (socket)=>{
             console.log(games.map((game)=>{
                 return {id:game.id,owner:game.owner.pseudo};
             }));
-            sockets.forEach((socket1)=>{
-                socket1.emit("rooms",games.filter((game)=>{
-                    if(game.connected===undefined) return true;
-                    return false;
-                }).map((game)=>{
-                    return {id:game.id,owner:game.owner.pseudo};
-                }));
-            })
+            sendRooms(sockets,games);
             console.log("after");
         }else{
             games = games.filter((game1)=>{
@@ -110,14 +62,7 @@ io.on("connection", (socket)=>{
                 }
                 return game1;
             })
-            sockets.forEach((socket1)=>{
-                socket1.emit("rooms",games.filter((game)=>{
-                    if(game.connected===undefined) return true;
-                    return false;
-                }).map((game)=>{
-                    return {id:game.id,owner:game.owner.pseudo};
-                }));
-            })
+            sendRooms(sockets,games);
         }
         
         socket.on("play",(number)=>{
@@ -172,7 +117,6 @@ io.on("connection", (socket)=>{
         });
     })
     socket.on("disconnect",(raison)=>{
-        // console.log(sockets);
         socket.isConnected = false;
         sockets = sockets.filter((socket1)=>{
             if(socket1===socket){
@@ -180,10 +124,9 @@ io.on("connection", (socket)=>{
             }
             return true;
         })
-        // console.log(sockets);
         games = games.filter((game)=>{
             if(game.connected!=undefined){
-                if(game.connected.pseudo===socket.pseudo||game.owner.pseudo===socket.pseudo){
+                if(game.connected===socket||game.owner===socket){
                     if(game.turn!==null){
                         game.connected.emit("advQuit");
                         game.owner.emit("advQuit");
@@ -194,14 +137,7 @@ io.on("connection", (socket)=>{
             }
             return false;
         })
-        sockets.forEach((socket1)=>{
-            socket1.emit("rooms",games.filter((game)=>{
-                if(game.connected===undefined) return true;
-                return false;
-            }).map((game)=>{
-                return {id:game.id,owner:game.owner.pseudo};
-            }));
-        })
+        sendRooms(sockets,games);
     })
     socket.on("iWantToKnowTheRoomsAvailable",()=>{
         socket.emit("rooms",games.filter((game)=>{
@@ -215,3 +151,4 @@ io.on("connection", (socket)=>{
 
 const checkWin = require("./modules/checkWin");
 const checkTie = require("./modules/checkTie");
+const sendRooms = require("./modules/sendRooms");
