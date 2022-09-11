@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "cd /home/riccardo/MorpionMultijoueurNodeJS/ && sudo node /home/riccardo/MorpionMultijoueurNodeJS/node_modules/nodemon/bin/nodemon.js"
   },
   "repository": {
     "type": "git",

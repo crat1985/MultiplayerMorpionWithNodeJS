@@ -41,12 +41,7 @@ submit.addEventListener("click",(e)=>{
         socket.on("alreadyinaparty",()=>{
             alert("Tu es déjà dans une autre partie !");
         })
-        socket.on("ownerQuit",()=>{
-            turnLabel.innerText = "Tu as gagné car ton adversaire a quitté !";
-            turnLabel.style.color = "green";
-            won();
-        });
-        socket.on("playerQuit",()=>{
+        socket.on("advQuit",()=>{
             turnLabel.innerText = "Tu as gagné car ton adversaire a quitté !";
             turnLabel.style.color = "green";
             won();
@@ -105,6 +100,8 @@ submit.addEventListener("click",(e)=>{
         })
         socket.on("notturn",()=>{
             // alert("Ce n'est pas ton tour, sois patient !")
+            turnLabel.style.scale = 2.5;
+            turnLabel.style.scale = 1;
         })
         socket.on("successturn",(table)=>{
             for(i=0;i<9;i++){
@@ -142,7 +139,6 @@ submit.addEventListener("click",(e)=>{
 })
 
 const won = ()=>{
-    success.pause();
     success.play();
 }
 const click = ()=>{

@@ -1,6 +1,7 @@
 *{
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    /* font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; */
     box-sizing: border-box;
+    transition: 0.25s ease;
 }
 body{
     background-color: blue;
@@ -22,14 +23,18 @@ form *{
 input[type="submit"]{
     background-color: blue;
     color: white;
-    border: 1px solid rgb(0, 0, 222);
+    border-color: rgb(0, 0, 200);
     font-weight: bold;
+}
+input[type="submit"]:hover{
+    scale: 1.1;
+    cursor: pointer;
 }
 .hidden{
     visibility: hidden;
 }
 .d-none{
-    display: none;
+    display: none !important;
 }
 .btn{
     background-color: white;
@@ -66,7 +71,10 @@ input[type="submit"]{
 }
 a{
     color: black;
-    text-align: center;
+    display: block;
+    width: fit-content;
+    margin: 0 auto;
+    /* text-align: center; */
 }
 p{
     text-align: center;
@@ -78,4 +86,31 @@ p{
     background-color: white;
     border-radius: 10px;
     padding: 10px;
+}
+.room{
+    margin: 10px auto;
+    background-color: white;
+    border: none;
+    border-radius: 10px;
+    width: fit-content;
+    padding: 10px;
+}
+.room *{
+    margin: 0;
+}
+
+button{
+    border-color: rgba(0, 0, 200);
+    background-color: blue;
+    color: white;
+    font-weight: bold;
+    display: flex !important;
+    margin: 10px auto 0 auto !important;
+}
+button:hover{
+    scale: 1.1;
+    cursor: pointer;
+}
+.ou{
+    font-weight: bold;
 }

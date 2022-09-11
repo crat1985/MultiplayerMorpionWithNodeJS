@@ -6,8 +6,11 @@ const buttons = document.getElementsByClassName("btn");
 const waiting = document.querySelector(".waiting");
 const link = document.querySelector(".link");
 const turnLabel = document.querySelector(".turn");
-const roomList = document.querySelector(".roomList");
+const roomList = document.querySelector(".rooms");
+const searchForRooms = document.querySelector(".search");
+const ou = document.querySelector(".ou");
 let socket = null;
+let searchSocket = null;
 let advPseudo;
 const success = new Audio("/mp3/success.mp3");
 const music = new Audio("/mp3/music.mp3");
@@ -15,6 +18,22 @@ music.play();
 music.loop = true;
 const clickSound = new Audio("/mp3/click.mp3");
 const gameOverSound = new Audio("/mp3/gameover.mp3");
+searchForRooms.addEventListener("click",(e)=>{
+    if(searchSocket===null){
+        searchSocket=io();
+        searchSocket.on("rooms",(rooms)=>{
+            roomList.innerHTML = "";
+            rooms.forEach(room => {
+                console.log(room);
+                roomList.innerHTML+='<div class="room"><p>Salon de '+room.owner+'</p><button class="join'+room.id+'">Rejoindre</button></div>';
+                document.querySelector(".join"+room.id).addEventListener("click",(e)=>{
+                    location.replace("/join?"+room.id);
+                });
+            });
+        })
+    }
+    searchSocket.emit("iWantToKnowTheRoomsAvailable");
+})
 submit.addEventListener("click",(e)=>{
     e.preventDefault();
     if(socket===null){
@@ -34,17 +53,14 @@ submit.addEventListener("click",(e)=>{
         socket.on("successfullyCreatedParty",()=>{
             console.log("Created party");
             form.classList.add("d-none");
+            searchForRooms.classList.add("d-none");
+            ou.classList.add("d-none");
             waiting.classList.remove("d-none");
             link.classList.remove("d-none");
             link.href = "https://"+location.hostname+"/join?"+socket.id;
             link.innerText = "https://"+location.hostname+"/join?"+socket.id;
         })
-        socket.on("ownerQuit",()=>{
-            turnLabel.innerText = "Tu as gagné car ton adversaire a quitté !";
-            turnLabel.style.color = "green";
-            won();
-        });
-        socket.on("playerQuit",()=>{
+        socket.on("advQuit",()=>{
             turnLabel.innerText = "Tu as gagné car ton adversaire a quitté !";
             turnLabel.style.color = "green";
             won();
@@ -103,8 +119,8 @@ submit.addEventListener("click",(e)=>{
         })
         socket.on("notturn",()=>{
             // alert("Ce n'est pas ton tour, sois patient !")
-            turnLabel.style.scale = "2.5";
-            turnLabel.style.scale = "1";
+            turnLabel.style.scale = 2.5;
+            turnLabel.style.scale = 1;
         })
         socket.on("successturn",(table)=>{
             for(i=0;i<9;i++){
