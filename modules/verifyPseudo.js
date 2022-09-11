@@ -1,4 +1,4 @@
-module.exports = (pseudo)=>{
+module.exports = (socket,pseudo)=>{
     if(pseudo.length<5){
         socket.emit("tooshort");
         return false;

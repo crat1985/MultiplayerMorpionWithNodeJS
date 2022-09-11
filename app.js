@@ -25,7 +25,7 @@ io.on("connection", (socket)=>{
     console.log(socket.id);
     sockets.push(socket);
     socket.on("pseudo",(pseudo,createGame,ID)=>{
-        if(!require("./modules/verifyPseudo")(pseudo)) return;
+        if(!require("./modules/verifyPseudo")(socket,pseudo)) return;
         socket.pseudo = pseudo;
         socket.isConnected = true;
         socket.emit("pseudoOk");
