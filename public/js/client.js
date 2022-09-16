@@ -12,6 +12,7 @@ const ou = document.querySelector(".ou");
 let socket = null;
 let searchSocket = null;
 let advPseudo;
+let pseudo = null;
 const success = new Audio("/mp3/success.mp3");
 const music = new Audio("/mp3/music.mp3");
 music.play();
@@ -52,6 +53,9 @@ submit.addEventListener("click",(e)=>{
         })
         socket.on("successfullyCreatedParty",()=>{
             console.log("Created party");
+            if(searchSocket!=null){
+                searchSocket.disconnect();
+            }
             form.classList.add("d-none");
             searchForRooms.classList.add("d-none");
             ou.classList.add("d-none");
@@ -59,6 +63,7 @@ submit.addEventListener("click",(e)=>{
             link.classList.remove("d-none");
             link.href = "https://"+location.hostname+"/join?"+socket.id;
             link.innerText = "https://"+location.hostname+"/join?"+socket.id;
+            roomList.innerHTML = "";
         })
         socket.on("advQuit",()=>{
             turnLabel.innerText = "Tu as gagné car ton adversaire a quitté !";
@@ -115,21 +120,23 @@ submit.addEventListener("click",(e)=>{
             });
         })
         socket.on("invalidnumber",()=>{
-            // alert("Nombre invalide !");
+            alert("Erreur 102 : Nombre invalide !\nEnvoie ce code d'erreur au développeur en expliquant comment tu as eu ce bug !");
         })
         socket.on("notturn",()=>{
             // alert("Ce n'est pas ton tour, sois patient !")
-            turnLabel.style.scale = 2.5;
-            turnLabel.style.scale = 1;
         })
         socket.on("successturn",(table)=>{
             for(i=0;i<9;i++){
+                console.log("[DEBUG] "+table[i]);
                 if(table[i]===pseudo){
+                    buttons[i].classList.remove("you");
                     buttons[i].classList.add("me");
                 } else if(table[i]===' '){
                     buttons[i].classList.remove("me");
                     buttons[i].classList.remove("you");
                 } else{
+                    console.log(">"+table[i],"-",pseudo+"<");
+                    buttons[i].classList.remove("me");
                     buttons[i].classList.add("you");
                 }
             }
@@ -153,7 +160,7 @@ submit.addEventListener("click",(e)=>{
             gameOver();
         })
     }
-    let pseudo = pseudoInput.value;
+    pseudo = pseudoInput.value;
     socket.emit("pseudo",pseudo,true,null);
 })
 

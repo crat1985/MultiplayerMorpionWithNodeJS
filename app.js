@@ -1,5 +1,4 @@
 const express = require("express");
-const path = require("path");
 const app = express();
 const fs = require("fs");
 const https = require("https").createServer({
@@ -22,9 +21,13 @@ let games = [];
 let sockets = [];
 
 io.on("connection", (socket)=>{
-    console.log(socket.id);
+    console.log("[DEBUG] "+socket.id);
     sockets.push(socket);
     socket.on("pseudo",(pseudo,createGame,ID)=>{
+        sockets = sockets.filter(socketE => {
+            if(socketE===socket) return false;
+            return true;
+        })
         if(!require("./modules/verifyPseudo")(socket,pseudo)) return;
         socket.pseudo = pseudo;
         socket.isConnected = true;
@@ -64,57 +67,7 @@ io.on("connection", (socket)=>{
             })
             sendRooms(sockets,games);
         }
-        
-        socket.on("play",(number)=>{
-            if(!(number>=0&&number<=8)){
-                socket.emit("invalidnumber");
-                return;
-            }
-            if(game.turn===socket.pseudo&&game.table[number]===' '){
-                game.table[number]=socket.pseudo;
-                if(socket.pseudo===game.owner.pseudo){
-                    game.turn=game.connected.pseudo;
-                    let win = checkWin(game);
-                    if(win!==undefined){
-                        win[0].emit("youwon");
-                        win[1].emit("youlose");
-                        game.turn = null;
-                    }else{
-                        if(checkTie(game)){
-                            game.owner.emit("tie");
-                            game.connected.emit("tie");
-                            game.turn = null;
-                        }else{
-                            game.connected.emit("yourturn");
-                            game.owner.emit("notagainyourturn");
-                        }
-                    }
-                }else{
-                    game.turn=game.owner.pseudo;
-                    let win = checkWin(game);
-                    if(win!==undefined){
-                        win[0].emit("youwon");
-                        win[1].emit("youlose");
-                        game.turn = null;
-                    }else{
-                        if(checkTie(game)){
-                            game.owner.emit("tie");
-                            game.connected.emit("tie");
-                            game.turn = null;
-                        }else{
-                            game.owner.emit("yourturn");
-                            game.connected.emit("notagainyourturn");
-                        }
-                    }
-                }
-                game.connected.emit("successturn",game.table);
-                game.owner.emit("successturn",game.table);
-            }else if(turn!==socket.pseudo){
-                socket.emit("notturn");
-            }else{
-                socket.emit("invalidnumber");
-            }
-        });
+        require("./modules/play")(socket,game);
     })
     socket.on("disconnect",(raison)=>{
         socket.isConnected = false;
@@ -125,13 +78,15 @@ io.on("connection", (socket)=>{
             return true;
         })
         games = games.filter((game)=>{
-            if(game.connected!=undefined){
-                if(game.connected===socket||game.owner===socket){
-                    if(game.turn!==null){
+            // if(game.connected!=undefined){
+            if(game.connected===socket||game.owner===socket){
+                if(game.turn!==null){
+                    if(game.connected!=undefined){
                         game.connected.emit("advQuit");
-                        game.owner.emit("advQuit");
                     }
+                    game.owner.emit("advQuit");
                 }
+                // }
             } else{
                 return true;
             }
@@ -140,15 +95,15 @@ io.on("connection", (socket)=>{
         sendRooms(sockets,games);
     })
     socket.on("iWantToKnowTheRoomsAvailable",()=>{
+        if(!sockets.includes(socket)) return;
         socket.emit("rooms",games.filter((game)=>{
             if(game.connected===undefined) return true;
             return false;
         }).map((game)=>{
             return {id:game.id,owner:game.owner.pseudo};
         }));
+        socket.emit("invalidnumber");
     })
 })
 
-const checkWin = require("./modules/checkWin");
-const checkTie = require("./modules/checkTie");
 const sendRooms = require("./modules/sendRooms");

@@ -96,12 +96,10 @@ submit.addEventListener("click",(e)=>{
             });
         })
         socket.on("invalidnumber",()=>{
-            // alert("Nombre invalide !");
+            alert("Erreur 102 : Nombre invalide !\nEnvoie ce code d'erreur au développeur en expliquant comment tu as eu ce bug !");
         })
         socket.on("notturn",()=>{
             // alert("Ce n'est pas ton tour, sois patient !")
-            turnLabel.style.scale = 2.5;
-            turnLabel.style.scale = 1;
         })
         socket.on("successturn",(table)=>{
             for(i=0;i<9;i++){
