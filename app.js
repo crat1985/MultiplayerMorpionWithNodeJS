@@ -23,7 +23,8 @@ let sockets = [];
 io.on("connection", (socket)=>{
     console.log("[DEBUG] "+socket.id);
     sockets.push(socket);
-    socket.on("pseudo",(pseudo,createGame,ID)=>{
+    socket.on("pseudo",(pseudo,ID,public)=>{
+        createGame = ID === "?" ? true : false;
         sockets = sockets.filter(socketE => {
             if(socketE===socket) return false;
             return true;
@@ -32,8 +33,8 @@ io.on("connection", (socket)=>{
         socket.pseudo = pseudo;
         socket.isConnected = true;
         socket.emit("pseudoOk");
-        const id = ID;
-        if(id!==null){
+        const id = ID === "?" ? "?" : ID;
+        if(id!=="?"){
             if(!require("./modules/verifyId")(id,games)){
                 socket.emit("invalidId");
                 return;
@@ -41,19 +42,17 @@ io.on("connection", (socket)=>{
         }
         if(require("./modules/checkIfIsAlreadyInParty")(socket,games)) return;
         let game;
-        let turn;
         if(createGame){
             socket.emit("successfullyCreatedParty");
-            game = {id: socket.id,owner: socket,connected:undefined,table:[' ',' ',' ',' ',' ',' ',' ',' ',' '],turn:socket.pseudo};
+            game = {id: socket.id,owner: socket,connected:undefined,table:[' ',' ',' ',' ',' ',' ',' ',' ',' '],turn:socket.pseudo,public:public};
             games.push(game);
-            console.log("before");
-            console.log(games.map((game)=>{
-                return {id:game.id,owner:game.owner.pseudo};
-            }));
+            // console.log(games.map((game)=>{
+            //     return {id:game.id,owner:game.owner.pseudo};
+            // }));
+            console.log(game.owner.pseudo+" created a new game !");
             sendRooms(sockets,games);
-            console.log("after");
         }else{
-            games = games.filter((game1)=>{
+            games = games.map((game1)=>{
                 if(game1.id===id){
                     if(game1.connected===undefined){
                         game1.connected=socket;
@@ -68,8 +67,14 @@ io.on("connection", (socket)=>{
             sendRooms(sockets,games);
         }
         require("./modules/play")(socket,game);
+        
     })
-    require("./modules/disconnect")(socket,sockets,games,sendRooms);
+    socket.on("disconnect",(raison)=>{
+        let temp = require("./modules/disconnect")(socket,sockets,games,sendRooms);
+        games = temp[0];
+        sockets = temp[1];
+    })
+    
     require("./modules/roomsAvailablesRequest")(socket,sockets,games);
 })
 

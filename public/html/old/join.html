@@ -5,11 +5,27 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multiplayer Morpion Game</title>
+    <script src="/socket.io/socket.io.js" defer></script>
+    <script src="/js/modules/checkPseudo.js" defer></script>
+    <script src="/js/modules/buttonsEventsAdd.js" defer></script>
+    <script src="/js/modules/advQuit.js" defer></script>
+    <script src="/js/modules/invalidNumber.js" defer></script>
+    <script src="/js/modules/successTurn.js" defer></script>
+    <script src="/js/modules/turn.js" defer></script>
+    <script src="/js/modules/replay.js" defer></script>
+    <script src="/js/modules/wonAndLose.js" defer></script>
+    <script src="/js/modules/musicControl.js" defer></script>
     <script src="/js/join.js" defer></script>
     <link rel="stylesheet" href="/css/style.css">
-    <script src="/socket.io/socket.io.js" defer></script>
 </head>
 <body>
+    <span class="music-control">
+        <label class="switch">
+            <input type="checkbox" name="checkbox" id="music-control-checkbox"checked>
+            <span class="slider"></span>
+        </label>
+        <span class="checkbox-title">Music</span>
+    </span>
     <form>
         <input type="text" name="pseudo" class="pseudo" placeholder="Pseudo">
         <input type="submit" value="Créer une partie" class="createGame">

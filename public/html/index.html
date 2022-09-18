@@ -6,17 +6,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multiplayer Morpion Game</title>
     <script src="/socket.io/socket.io.js" defer></script>
+    <script src="/js/modules/checkPseudo.js" defer></script>
+    <script src="/js/modules/buttonsEventsAdd.js" defer></script>
+    <script src="/js/modules/advQuit.js" defer></script>
+    <script src="/js/modules/successTurn.js" defer></script>
+    <script src="/js/modules/replay.js" defer></script>
+    <script src="/js/modules/wonAndLose.js" defer></script>
+    <script src="/js/modules/musicControl.js" defer></script>
     <script src="/js/client.js" defer></script>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
+    <!--<nav class="navbar">
+        <span class="icon">| | |</span>
+        <span class="subnav">
+            <p>test</p>
+        </span>
+    </nav>-->
+    <span class="music-control">
+        <label class="switch">
+            <input type="checkbox" name="checkbox" id="music-control-checkbox" checked>
+            <span class="slider"></span>
+        </label>
+        <span class="checkbox-title">Musique</span>
+    </span>
     <form>
         <input type="text" name="pseudo" class="pseudo" placeholder="Pseudo">
+        <span class="publicOrPrivate d-none">
+            <input type="radio" name="publicOrPrivate" id="" class="public" value="public" checked>
+            <label for="public">Publique</label>
+            <input type="radio" name="publicOrPrivate" id="" class="private" value="private">
+            <label for="private">Privée</label>
+        </span>
         <input type="submit" value="Créer une partie" class="createGame">
     </form>
     <p class="ou">OU</p>
     <button class="search">Chercher des parties</button>
     <div class="rooms"></div>
+    <p class="d-none searchingRooms">Recherche de parties...</p>
     <p class="waiting d-none" style="text-align: center;">Attente d'un autre joueur...</p>
     <a class="link d-none" target="_blank"></a>
     <p class="turn d-none"></p>
@@ -31,6 +58,6 @@
         <div class="btn8 btn d-none"></div>
         <div class="btn9 btn d-none"></div>
     </div>
-    <button class="replay d-none">Replay</button>
+    <button class="replay d-none">Rejouer</button>
 </body>
 </html>
