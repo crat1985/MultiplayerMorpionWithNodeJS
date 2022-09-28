@@ -56,7 +56,9 @@ searchForRooms.addEventListener("click",(e)=>{
 })
 submit.addEventListener("click",(e)=>{
     e.preventDefault();
-    searchSocket.disconnect();
+    if(searchSocket!=null){
+        searchSocket.disconnect();
+    }
     searchSocket = null;
     document.querySelector(".searchingRooms").classList.add("d-none");
     pseudo = pseudoInput.value;
